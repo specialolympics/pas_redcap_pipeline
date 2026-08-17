@@ -62,7 +62,14 @@ logging.info("All survey dfs created, ready to upload. -PAS_RC")
 
 ## Runs uploads.py to upload into datalake
 storage_acct = os.getenv('storage_account')
+if storage_acct is None:
+    logging.error("STORAGE_ACCOUNT environment variable is missing. -PAS_RC")
+    raise ValueError("STORAGE_ACCOUNT environment variable is missing")
+
 cont = os.getenv('container')
+if cont is None:
+    logging.error("CONTAINER environment variable is missing. -PAS_RC")
+    raise ValueError("CONTAINER environment variable is missing")
 
 hoy = pd.Timestamp.today().strftime("%Y-%m-%d")
 

@@ -18,7 +18,12 @@ def build_total():
         'exportSurveyFields': 'true'
     }
 
-    r = requests.post(os.getenv('api_url'), data=fields)
+    RC_URL = os.getenv('api_url')
+    if RC_URL is None:
+        logging.error("Api_url environment variable is missing. -PAS_RC")
+        raise ValueError("Api_url environment variable is missing")
+
+    r = requests.post(RC_URL, data=fields)
     print('HTTP Status AZ: ' + str(r.status_code))
 
     # Convert the data to pandas data frame for easier manipulation.
@@ -34,7 +39,7 @@ def build_total():
         'exportSurveyFields': 'true'
     }
 
-    r = requests.post(os.getenv('api_url'), data=fields)
+    r = requests.post(RC_URL, data=fields)
     print('HTTP Status CO: ' + str(r.status_code))
 
     # Convert the data to pandas data frame for easier manipulation.
@@ -50,7 +55,7 @@ def build_total():
         'exportSurveyFields': 'true'
     }
 
-    r = requests.post(os.getenv('api_url'), data=fields)
+    r = requests.post(RC_URL, data=fields)
     print('HTTP Status MN: ' + str(r.status_code))
 
     # Convert the data to pandas data frame for easier manipulation.
@@ -66,7 +71,7 @@ def build_total():
         'exportSurveyFields': 'true'
     }
 
-    r = requests.post(os.getenv('api_url'), data=fields)
+    r = requests.post(RC_URL, data=fields)
     print('HTTP Status NM: ' + str(r.status_code))
 
     # Convert the data to pandas data frame for easier manipulation.
@@ -82,7 +87,7 @@ def build_total():
         'exportSurveyFields': 'true'
     }
 
-    r = requests.post(os.getenv('api_url'), data=fields)
+    r = requests.post(RC_URL, data=fields)
     print('HTTP Status PA: ' + str(r.status_code))
 
     # Convert the data to pandas data frame for easier manipulation.
@@ -98,7 +103,7 @@ def build_total():
         'exportSurveyFields': 'true'
     }
 
-    r = requests.post(os.getenv('api_url'), data=fields)
+    r = requests.post(RC_URL, data=fields)
     print('HTTP Status WI: ' + str(r.status_code))
 
     # Convert the data to pandas data frame for easier manipulation.
@@ -270,12 +275,41 @@ def build_admin(df):
 
 ## ID Key
 def build_id_key(df):
-    key1 = df.loc[df["redcap_event_name"] == "admin_arm_1", ["id", "REDCap_ID", "admin_fitbit_id"]]
-    ema1 = df.loc[df["redcap_event_name"] == "baseline_arm_1", ["REDCap_ID", "ema_mob_code"]]
-    #ema1 = bl1[["REDCap_ID", "ema_mob_code"]]
-    key = key1.merge(ema1, on="REDCap_ID", how="left")
-    key = key.rename(columns={"admin_fitbit_id": "Fitbit_ID",
-                              "ema_mob_code": "Illumivu_ID"})
+    admin1 = df.loc[df["redcap_event_name"] == "admin_arm_1", ["id", "REDCap_ID", "admin_fitbit_id", "admin_illumivu_id"]].copy()
+    ema1 = df.loc[df["redcap_event_name"] == "baseline_arm_1", ["REDCap_ID", "ema_mob_code"]].copy()
+    key1 = admin1.merge(ema1, on="REDCap_ID", how="left")
+    def clean_illumivu_id(series):
+        """ Keep only 8-digit positive integers. Everything else becomes NA. """
+        s = pd.to_numeric(series, errors='coerce')
+        valid = (s.notna() & (s >= 10_000_000) & (s <= 99_999_999))
+        return s.where(valid, pd.NA)
+    key1['ema_mob_code_clean'] = clean_illumivu_id(key1['ema_mob_code'])
+    key1['admin_illumivu_id_clean'] = clean_illumivu_id(key1['admin_illumivu_id'])
+    id_check = (key1.groupby('REDCap_ID').apply(
+        lambda g: pd.concat([
+            g['ema_mob_code_clean'],
+            g['admin_illumivu_id_clean']
+            ]).dropna().nunique()
+            ))
+    conflicts = id_check[id_check > 1]
+    print(f"{len(conflicts)} record_ids have conflicting valid IDs")
+    for rid in conflicts.index:
+        vals = pd.concat([
+            key1.loc[key1['record_id'] == rid, 'ema_mob_code_clean'],
+            key1.loc[key1['record_id'] == rid, 'admin_illumivu_id_clean']
+        ]).dropna().unique()
+        print(rid, vals)
+    key1['Illumivu_ID'] = (key1['ema_mob_code_clean']
+                         .combine_first(key1['admin_illumivu_id_clean']))
+    key1['Illumivu_ID'] = (key1.groupby('REDCap_ID')['Illumivu_ID']
+                         .transform(lambda x: 
+                                    x.dropna().iloc[0] if x.notna().any() 
+                                    else pd.NA))
+    if len(conflicts):
+        print("WARNING: Conflicting valid Illumivu IDs found:")
+        print(conflicts.index.tolist())
+    key = key1[['id', 'REDCap_ID', 'admin_fitbit_id', 'Illumivu_ID']].copy()
+    key = key.rename(columns={"admin_fitbit_id": "Fitbit_ID"})
     check_unique_id(key)
     return key
 
