@@ -56,6 +56,7 @@ phys = build_ph(total)
 socemo = build_se(total)
 prtcp = build_prtcp(total)
 pasn = build_notes(total)
+suac = build_sup_act(total)
 ex = build_exit(total)
 
 logging.info("All survey dfs created, ready to upload. -PAS_RC")
@@ -111,7 +112,10 @@ upload_RC_df_to_az_datalake(prtcp, "Participation", prtcp_file_ext, storage_acct
  
 pasn_file_ext = f"/hot/notes/PAS_notes_{hoy}.json"
 upload_RC_df_to_az_datalake(pasn, "PAS_Notes", pasn_file_ext, storage_acct, cont)
- 
+
+suac_file_ext = f"/hot/sup_act/Sup_Act_{hoy}.json"
+upload_RC_df_to_az_datalake(suac, "Supplemental_Activities", suac_file_ext, storage_acct, cont)
+
 ex_file_ext = f"/hot/exit/Exit_{hoy}.json"
 upload_RC_df_to_az_datalake(ex, "Exit", ex_file_ext, storage_acct, cont)
 

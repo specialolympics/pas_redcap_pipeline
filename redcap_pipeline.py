@@ -165,7 +165,8 @@ from columns import (
     PHYSICAL_HEALTH_COLS,
     SOCIAL_EMOTIONAL_COLS,
     PARTICIPATION_COLS,
-    PAS_NOTES_COLS)
+    PAS_NOTES_COLS,
+    SUP_ACT_COLS)
 
 def set_col_types(tot):
     # --- Keep only columns present in the dataframe ---
@@ -505,7 +506,8 @@ def build_prtcp(df):
 
 ## PAS Notes
 def build_notes(df):
-    pn = (df.loc[df["redcap_event_name"] == "repeating_inst_arm_1"].copy())
+    pn = (df.loc[df["redcap_event_name"] == "repeating_inst_arm_1"]
+          .loc[df["pa_participant_notes_date"].notna()].copy())
     pn = pn[PAS_NOTES_COLS]
     pn.insert(2, "Age_at_Note", (calculate_age(pn["dob"], pn["pa_participant_notes_date"])))
     pn.drop(columns=["dob"], inplace=True)
@@ -515,6 +517,20 @@ def build_notes(df):
     pn.insert(0, "id", (pn["REDCap_ID"] + "_" + pn["pa_participant_notes_date"].astype(str)))
     check_unique_id(pn)
     return pn
+
+## Supplemental Activities
+def build_sup_act(df):
+    sa = (df.loc[df["redcap_event_name"] == "repeating_inst_arm_1"]
+          .loc[df["suac_date"].notna()].copy())
+    sa = sa[SUP_ACT_COLS]
+    sa.insert(2, "Age_at_Activity", (calculate_age(sa["dob"], sa["suac_date"])))
+    sa.drop(columns=["dob"], inplace=True)
+    sa.insert(1, "Arm", 1)
+    sa.insert(1, "Event_Name", "Repeating_Inst")
+    sa = sa.copy()
+    sa.insert(0, "id", (sa["REDCap_ID"] + "_" + sa["suac_date"].astype(str)))
+    check_unique_id(sa)
+    return sa
 
 ## Exit Survey
 def build_exit(df):
