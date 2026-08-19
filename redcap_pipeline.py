@@ -505,8 +505,8 @@ def build_prtcp(df):
 
 ## PAS Notes
 def build_notes(df):
-    pn = (df.loc[df["redcap_event_name"] == "repeating_inst_arm_1"]
-          .loc[df["pa_participant_notes_date"].notna()].copy())
+    pn = df.loc[(df["redcap_event_name"] == "repeating_inst_arm_1")
+                 & (df["pa_participant_notes_date"].notna())].copy()
     pn = pn[PAS_NOTES_COLS]
     pn.insert(2, "Age_at_Note", (calculate_age(pn["dob"], pn["pa_participant_notes_date"])))
     pn.drop(columns=["dob"], inplace=True)
@@ -519,8 +519,8 @@ def build_notes(df):
 
 ## Supplemental Activities
 def build_sup_act(df):
-    sa = (df.loc[df["redcap_event_name"] == "repeating_inst_arm_1"]
-          .loc[df["suac_date"].notna()].copy())
+    sa = df.loc[(df["redcap_event_name"] == "repeating_inst_arm_1") 
+                & (df["suac_date"].notna())].copy()
     sa = sa[SUP_ACT_COLS]
     sa.insert(2, "Age_at_Activity", (calculate_age(sa["dob"], sa["suac_date"])))
     sa.drop(columns=["dob"], inplace=True)
