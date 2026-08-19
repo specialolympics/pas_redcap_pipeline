@@ -145,7 +145,6 @@ def build_total():
     return tot
 
 ## Need to set data types, starting with column imports 
-  ### UPDATE folder path:
 from columns import (
     CHAR_COLS,
     INT_COLS_1,
