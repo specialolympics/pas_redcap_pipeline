@@ -136,6 +136,12 @@ CHAR_COLS = [
     "pa_participant_notes",
     'suac_type_other',
     'suac_notes',
+    'ec_contact_who_other', 
+    'ec_contact_method_other', 
+    'ec_contact_reason_other', 
+    'ec_contact_notes',
+    'ec_contact_complete',
+    'inact_anything_help',
     "exit_leave_other",
     "exit_time_other",
     "exit_priv_other",
@@ -1097,6 +1103,23 @@ INT_COLS_2 = [
     "project_all_star_notes_complete",
     'suac_type',
     'supplemental_activity_complete',
+    'ec_contact_who___1', 
+    'ec_contact_who___2', 
+    'ec_contact_who___3', 
+    'ec_contact_who___99', 
+    'ec_contact_method', 
+    'ec_contact_made', 
+    'ec_contact_reason___1', 
+    'ec_contact_reason___2',
+    'ec_contact_reason___3', 
+    'ec_contact_reason___4',
+    'ec_contact_reason___5', 
+    'ec_contact_reason___99',
+    'ec_contact_ltfu', 
+    'ec_contact_reminder', 
+    'ec_contact_reminder_days',
+    'inact_want_to_stay',
+    'inactive_survey_complete',
     "exit_leave___1",
     "exit_leave___2",
     "exit_leave___3",
@@ -1202,6 +1225,8 @@ DATE_COLS = [
     "se_date",
     "pa_participant_notes_date",
     'suac_date',
+    'ec_contact_date', 
+    'inact_date', 
     "exit_date",
 ]
 
@@ -1215,6 +1240,7 @@ DT_COLS = [
     "annual_survey_part_2_timestamp",
     "physical_health_survey_timestamp",
     "social_emotional_health_survey_timestamp",
+    'inactive_survey_timestamp', 
     "exit_survey_timestamp",
 ]
 
@@ -1260,6 +1286,7 @@ ADMIN_COLS = [
     "admin_ltfu_notes",
     "admin_complete",
 ]
+
 IEQ_COLS = [
     "REDCap_ID",
     "redcap_event_name",
@@ -1318,6 +1345,7 @@ IEQ_COLS = [
     "ieq_shirt_other",
     "ieq_complete",
 ]
+
 ICF_COLS = [
     "REDCap_ID",
     "dob",
@@ -1362,6 +1390,7 @@ ICF_COLS = [
     "icf_ec_sig_con_d",
     "icf_complete",
 ]
+
 IPFA_COLS = [
     "REDCap_ID",
     "dob",
@@ -1491,6 +1520,7 @@ IPFA_COLS = [
     "ipa_total_time_h",
     "ipa_complete",
 ]
+
 IPFA_SURVEY_COLS = [
     "REDCap_ID",
     "dob",
@@ -1516,6 +1546,7 @@ IPFA_SURVEY_COLS = [
     "mms_advice",
     "ipa_survey_complete",
 ]
+
 ANNUAL_PT1_COLS = [
     "REDCap_ID",
     "dob",
@@ -1615,6 +1646,7 @@ ANNUAL_PT1_COLS = [
     "as1_adjusted",
     "annual_survey_part_1_complete",
 ]
+
 ANNUAL_PT2_COLS = [
     "REDCap_ID",
     "dob",
@@ -1754,6 +1786,7 @@ ANNUAL_PT2_COLS = [
     "how_helped_other",
     "annual_survey_part_2_complete",
 ]
+
 PHYSICAL_HEALTH_COLS = [
     "REDCap_ID",
     "dob",
@@ -1891,6 +1924,7 @@ PHYSICAL_HEALTH_COLS = [
     "ph_ssq_help_how___3",
     "physical_health_survey_complete",
 ]
+
 SOCIAL_EMOTIONAL_COLS = [
     "REDCap_ID",
     "dob",
@@ -1967,6 +2001,7 @@ SOCIAL_EMOTIONAL_COLS = [
     "se_si_lonely",
     "social_emotional_health_survey_complete",
 ]
+
 PARTICIPATION_COLS = [
     "REDCap_ID",
     "redcap_event_name",
@@ -2419,6 +2454,7 @@ PARTICIPATION_COLS = [
     "se_pt_fitness_captain",
     "se_pt_health_messenger",
 ]
+
 PAS_NOTES_COLS = [
     "REDCap_ID",
     "pa_participant_notes_date",
@@ -2426,6 +2462,7 @@ PAS_NOTES_COLS = [
     "project_all_star_notes_complete",
     "dob",
 ]
+
 SUP_ACT_COLS = [
     "REDCap_ID",
     'suac_date', 
@@ -2435,6 +2472,43 @@ SUP_ACT_COLS = [
     'supplemental_activity_complete',
     'dob',
 ]
+
+EC_CONTACT_COLS = [
+    'REDCap_ID',
+    'ec_contact_date', 
+    'redcap_repeat_instance',
+    'ec_contact_who___1', 
+    'ec_contact_who___2', 
+    'ec_contact_who___3', 
+    'ec_contact_who___99', 
+    'ec_contact_who_other', 
+    'ec_contact_method', 
+    'ec_contact_method_other', 
+    'ec_contact_made',
+    'ec_contact_reason___1', 
+    'ec_contact_reason___2',
+    'ec_contact_reason___3', 
+    'ec_contact_reason___4',
+    'ec_contact_reason___5', 
+    'ec_contact_reason___99',
+    'ec_contact_reason_other', 
+    'ec_contact_ltfu', 
+    'ec_contact_notes',
+    'ec_contact_reminder', 
+    'ec_contact_reminder_days',
+    'ec_contact_complete'
+]
+
+INACTIVE_COLS = [
+    'REDCap_ID',
+    'inactive_survey_timestamp', 
+    'inact_date', 
+    'redcap_repeat_instance',
+    'inact_want_to_stay',
+    'inact_anything_help', 
+    'inactive_survey_complete'
+]
+
 EXIT_COLS = [
     "REDCap_ID",
     "dob",

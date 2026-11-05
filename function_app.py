@@ -55,6 +55,8 @@ def PAS_RC_Upload(myTimer: func.TimerRequest) -> None:
     prtcp = build_prtcp(total)
     pasn = build_notes(total)
     suac = build_sup_act(total)
+    ec = build_ec_contact(total)
+    ia = build_inactive(total)
     ex = build_exit(total)
 
     logging.info("All survey dfs created, ready to upload. -PAS_RC")
@@ -111,6 +113,12 @@ def PAS_RC_Upload(myTimer: func.TimerRequest) -> None:
 
     suac_file_ext = f"/hot/sup_act/Sup_Act_{hoy}.json"
     upload_RC_df_to_az_datalake(suac, "Supplemental_Activities", suac_file_ext, storage_acct, cont)
+
+    ec_file_ext = f"/hot/ec_contact/EC_Contact_{hoy}.json"
+    upload_RC_df_to_az_datalake(ec, "EC_Contact", ec_file_ext, storage_acct, cont)
+
+    ia_file_ext = f"/hot/inactive/Inactive_{hoy}.json"
+    upload_RC_df_to_az_datalake(ia, "Inactive", ia_file_ext, storage_acct, cont)
 
     ex_file_ext = f"/hot/exit/Exit_{hoy}.json"
     upload_RC_df_to_az_datalake(ex, "Exit", ex_file_ext, storage_acct, cont)

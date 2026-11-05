@@ -165,7 +165,10 @@ from columns import (
     SOCIAL_EMOTIONAL_COLS,
     PARTICIPATION_COLS,
     PAS_NOTES_COLS,
-    SUP_ACT_COLS)
+    SUP_ACT_COLS,
+    EC_CONTACT_COLS,
+    INACTIVE_COLS
+)
 
 def set_col_types(tot):
     # --- Keep only columns present in the dataframe ---
@@ -530,6 +533,32 @@ def build_sup_act(df):
     sa.insert(0, "id", (sa["REDCap_ID"] + "_" + sa["suac_date"].astype(str)))
     check_unique_id(sa)
     return sa
+
+## EC Contact Form
+def build_ec_contact(df):
+    ec = df.loc[df["redcap_event_name"] == "repeating_inst_arm_1"]
+    ec = ec.loc[ec["ec_contact_date"] > "2026-01-01"]
+    ec = ec[EC_CONTACT_COLS]
+    ec.insert(1, "Arm", 1)
+    ec.insert(1, "Event_Name", "Repeating_Inst")
+    ec = ec.copy()
+    ec.insert(0, "id", (ec["REDCap_ID"] + "_" + ec["ec_contact_date"].astype(str)
+                        + "_" + ec["redcap_repeat_instance"].astype(str)))
+    check_unique_id(ec)  ## 
+    return ec
+
+## Inactive Survey
+def build_inactive(df):
+    ia = df.loc[df["redcap_event_name"] == "repeating_inst_arm_1"]
+    ia = ia.loc[ia["inact_date"] > "2026-01-01"]
+    ia = ia[INACTIVE_COLS]
+    ia.insert(1, "Arm", 1)
+    ia.insert(1, "Event_Name", "Repeating_Inst")
+    ia = ia.copy()
+    ia.insert(0, "id", (ia["REDCap_ID"] + "_" + ia["inact_date"].astype(str) 
+                        + "_" + ia["redcap_repeat_instance"].astype(str)))
+    check_unique_id(ia)  ## 
+    return ia
 
 ## Exit Survey
 def build_exit(df):
